@@ -4,7 +4,6 @@
 #include <math.h>
 
 #define GAMMA (4 * (M_PI * M_PI))
-#define EPSILON 1e-6 // Tolleranza
 
 struct vector {
   double x;
