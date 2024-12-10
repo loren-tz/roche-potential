@@ -5,7 +5,6 @@ from matplotlib.animation import FuncAnimation
 from scipy.interpolate import Rbf, griddata
 from scipy.ndimage import gaussian_filter
 
-
 # Function to collect input from the user with default values
 def get_input(prompt, default):
     user_input = input(f"{prompt} (default={default}): ").strip()
@@ -96,7 +95,6 @@ Z[nan_mask] = Z_rbf[nan_mask]
 # Applying Gaussian filter to smooth transitions
 sigma_smooth = 3
 Z = gaussian_filter(Z, sigma=sigma_smooth)
-
 
 # Creating the plot
 fig = plt.figure(figsize=(12, 8))
