@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-
 #define GAMMA (4 * (M_PI * M_PI))
 
 struct vector {
@@ -30,7 +29,7 @@ int main (int argc, char *argv[]) {
     q =  M1 / (M1 + M2);
   } else {
     q = M2 / (M1 + M2);
-  };
+  }
   mu_a = q;
   mu_b = 1 - mu_a;
   fp = fopen("roche_data.dat", "w");

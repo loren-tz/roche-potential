@@ -34,7 +34,7 @@ args = [str(parameters[0]), str(parameters[1]), str(parameters[2]), str(paramete
 # Executing the C script
 try:
     result = subprocess.run(
-        ["./roche_sim.exe"] + args,
+        ["./roche_sim"] + args,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
