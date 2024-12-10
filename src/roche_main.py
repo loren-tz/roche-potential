@@ -2,8 +2,10 @@ import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import PillowWriter
 from scipy.interpolate import Rbf, griddata
 from scipy.ndimage import gaussian_filter
+import os
 
 # Function to collect input from the user with default values
 def get_input(prompt, default):
@@ -31,6 +33,10 @@ cutoff = -parameters[2] * 30  # Cutoff potential
 # Building the parameters to pass to the C program
 args = [str(parameters[0]), str(parameters[1]), str(parameters[2]), str(parameters[3]), str(cutoff)]
 
+if not os.path.exists('./roche_sim'):
+    print("Error: Executable roche_sim not found.")
+    exit()
+
 # Executing the C script
 try:
     result = subprocess.run(
@@ -54,6 +60,9 @@ try:
 except Exception as e:
     print(f"Error while reading the file {file_path}:")
     print(e)
+    exit()
+if data.size == 0:
+    print("Error: The file roche_data.dat is empty or invalid.")
     exit()
 
 # Mapping onto a NxN grid
@@ -97,7 +106,7 @@ sigma_smooth = 3
 Z = gaussian_filter(Z, sigma=sigma_smooth)
 
 # Creating the plot
-fig = plt.figure(figsize=(12, 8))
+fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111, projection="3d")
 
 # Surface plot
@@ -113,30 +122,43 @@ ax.set_yticks([])
 ax.set_ylabel('')
 ax.set_zticks([])
 ax.set_zlabel('')
+ax.xaxis.pane.set_visible(False)
+ax.yaxis.pane.set_visible(False)
+ax.zaxis.pane.set_visible(False)
 ax.xaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
 ax.yaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
 ax.zaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
 ax.grid(False)
 fig.patch.set_facecolor('white')
 ax.set_facecolor('white')
-ax.xaxis.pane.set_visible(False)
-ax.yaxis.pane.set_visible(False)
-ax.zaxis.pane.set_visible(False)
-cbar = fig.colorbar(surf, shrink=0.5, aspect=20, pad=0.01)
+# Configurazione colorbar
+cbar = fig.colorbar(surf, shrink=0.4, aspect=15, pad=0.05)
 cbar.set_ticks([])
-cbar.set_label(r"$V_{\mathrm{R}}(x, y)$", fontsize=12, labelpad=30, rotation=0)
+cbar.set_label(r"$V_{\mathrm{R}}(x, y)$", fontsize=12, labelpad=10, rotation=90)
 
-ax.set_title(r"Roche potential for $M_1$, $M_2$", fontsize=12, pad=0)
+ax.set_title(r"Roche Potential for $M_1$, $M_2$", fontsize=12, pad=0)
 
 # Function to update the view for each frame
 def update(frame):
     ax.view_init(elev=30, azim=frame)  # Change azimuth angle
-    return surf,
 
 # Creating the animation
 frames = 360  # Number of frames (one full rotation = 360 degrees)
-fps = 60
+fps = 30
 ani = FuncAnimation(fig, update, frames=frames, interval=1000/fps, blit=False)
+
+# Salvataggio dell'animazione
+if input("Do you want to export export the plot as a .gif (y/n): ") == "y":
+    print("Exporting...")
+    output_filename = "roche_potential.gif"
+    try:
+        writer = PillowWriter(fps=fps, metadata={"loop": 0})
+        ani.save(output_filename, writer=writer, dpi=100)  # Risoluzione ridotta
+        print(f"Animation successfully saved as {output_filename}")
+    except Exception as e:
+        print(f"Error while saving the animation: {e}")
+
+print("Close the plot to exit.")
 
 # Show the plot
 plt.show()
