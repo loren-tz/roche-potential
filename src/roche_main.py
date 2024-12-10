@@ -145,8 +145,10 @@ frames = 360  # Number of frames (one full rotation = 360 degrees)
 fps = 30
 ani = FuncAnimation(fig, update, frames=frames, interval=1000/fps, blit=False)
 
-# Salvataggio dell'animazione
-if input("Do you want to export export the plot as a .gif (y/n): ") == "y":
+save_gif = input("Do you want to save the animation? (y/n): ").strip().lower() in ['s', 'si', 'y', 'yes']
+
+# Saving the animation
+if save_gif:
     print("Exporting...")
     output_filename = "roche_potential.gif"
     try:
