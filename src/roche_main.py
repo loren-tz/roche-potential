@@ -131,11 +131,9 @@ ax.zaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
 ax.grid(False)
 fig.patch.set_facecolor('white')
 ax.set_facecolor('white')
-# Configurazione colorbar
 cbar = fig.colorbar(surf, shrink=0.4, aspect=15, pad=0.05)
 cbar.set_ticks([])
 cbar.set_label(r"$V_{\mathrm{R}}(x, y)$", fontsize=12, labelpad=10, rotation=90)
-
 ax.set_title(r"Roche Potential for $M_1$, $M_2$", fontsize=12, pad=0)
 
 # Function to update the view for each frame
