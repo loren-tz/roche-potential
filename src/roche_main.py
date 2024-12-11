@@ -109,8 +109,19 @@ Z = gaussian_filter(Z, sigma=sigma_smooth)
 fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111, projection="3d")
 
+Z_offset = Z - np.min(Z) / 4
+
+plot_style = input("Use a colormap for the surface? (y/n): ").strip().lower() in ['s', 'si', 'y', 'yes']
+
 # Surface plot
-surf = ax.plot_surface(X, Y, Z - np.min(Z) / 4, cmap="YlOrBr_r", alpha=0.8, edgecolor="black", linewidth=0.1)
+if plot_style:
+    surf = ax.plot_surface(X, Y, Z_offset, cmap="YlOrBr_r", alpha=1, edgecolor="black", linewidth=0.1)
+    cbar = fig.colorbar(surf, shrink=0.4, aspect=15, pad=0.05)
+    cbar.set_ticks([])
+    cbar.set_label(r"$V_{\mathrm{R}}(x, y)$", fontsize=12, labelpad=10, rotation=90)
+else:
+    surf = ax.plot_surface(X, Y, Z_offset, color="white", alpha=1, edgecolor="black", linewidth=0.1)
+
 
 # Projecting the surface onto the XY plane
 ax.contourf(X, Y, Z, zdir='z', offset=np.min(Z), cmap='Greys_r', alpha=1)
@@ -131,9 +142,6 @@ ax.zaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
 ax.grid(False)
 fig.patch.set_facecolor('white')
 ax.set_facecolor('white')
-cbar = fig.colorbar(surf, shrink=0.4, aspect=15, pad=0.05)
-cbar.set_ticks([])
-cbar.set_label(r"$V_{\mathrm{R}}(x, y)$", fontsize=12, labelpad=10, rotation=90)
 ax.set_title(r"Roche Potential for $M_1$, $M_2$", fontsize=12, pad=0)
 
 # Function to update the view for each frame
@@ -145,20 +153,21 @@ frames = 360  # Number of frames (one full rotation = 360 degrees)
 fps = 30
 ani = FuncAnimation(fig, update, frames=frames, interval=1000/fps, blit=False)
 
-save_gif = input("Do you want to save the animation? (y/n): ").strip().lower() in ['s', 'si', 'y', 'yes']
+print("Close the plot window to continue.")
+
+plt.show()
 
 # Saving the animation
+save_gif = input("Do you want to save the animation? (y/n): ").strip().lower() in ['s', 'si', 'y', 'yes']
+
 if save_gif:
     print("Exporting...")
     output_filename = "roche_potential.gif"
     try:
         writer = PillowWriter(fps=fps, metadata={"loop": 0})
-        ani.save(output_filename, writer=writer, dpi=100)  # Risoluzione ridotta
+        ani.save(output_filename, writer=writer, dpi=100)  # Salva la GIF
         print(f"Animation successfully saved as {output_filename}")
     except Exception as e:
         print(f"Error while saving the animation: {e}")
-
-print("Close the plot to exit.")
-
-# Show the plot
-plt.show()
+else:
+    print("You chose not to save the animation.")
