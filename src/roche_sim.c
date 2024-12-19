@@ -58,25 +58,26 @@ int main (int argc, char *argv[]) {
 }
 
 double cub_mod(struct vector r) {
-  double mod_r = sqrt((r.x * r.x) + (r.y * r.y)) * sqrt((r.x * r.x) + (r.y * r.y)) * sqrt((r.x * r.x) + (r.y * r.y));
+  double mod_r_sqrt = sqrt((r.x * r.x) + (r.y * r.y));
+  double mod_r = mod_r_sqrt * mod_r_sqrt * mod_r_sqrt;
   return mod_r;
 }
 
 struct vector scal(struct vector n, double s) {
-  n.x = n.x * s;
-  n.y = n.y * s;
+  n.x *= s;
+  n.y *= s;
   return n;
 }
 
 struct vector sum(struct vector n, struct vector s) {
-  n.x = n.x + s.x;
-  n.y = n.y + s.y;
+  n.x += s.x;
+  n.y += s.y;
   return n;
 }
 
 struct vector diff(struct vector n, struct vector s) {
-  n.x = n.x - s.x;
-  n.y = n.y - s.y;
+  n.x -= s.x;
+  n.y -= s.y;
   return n;
 }
 
